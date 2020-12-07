@@ -1,0 +1,8 @@
+﻿@model VoltTools.Models.Views.PageView
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = Model.title;
+}
+
+@Html.Raw(Model.contents)
