@@ -4,5 +4,18 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewData["Title"] = Model.title;
 }
+<div id="page">
+    <b-container>
+        <b-card-body>
+            @Html.Raw(Model.contents)
+        </b-card-body>
+    </b-container>
+</div>
+<script>
+    new Vue({
+        el: "#page",
+        data: {
 
-@Html.Raw(Model.contents)
+        }
+    });
+</script>

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using VoltTools.Controllers;
 using VoltTools.Models;
 using VoltTools.Models.Views;
 
@@ -21,6 +22,7 @@ namespace WebApplication1
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IDatabase>(new Mongo());
+            services.AddSingleton<ShortUrlAccounter>();
             services.AddTransient<BaseView>();
             services.AddTransient<PageView>();
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
@@ -34,7 +36,7 @@ namespace WebApplication1
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/error.html");
 
                 app.UseHsts();
             }
@@ -52,7 +54,7 @@ namespace WebApplication1
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Home}/{action=Page}/{id?}");
             });
         }
     }

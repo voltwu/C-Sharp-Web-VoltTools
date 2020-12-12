@@ -18,10 +18,9 @@
     <script type="text/javascript" src="~/lib/js/bootstrap-vue.js"></script>
 
     <link type="text/javascript" rel="stylesheet" href="~/css/main.css" asp-append-version="true" />
-
 </head>
 <body>
-
+    @RenderSection("header", false)
     <div id="app">
         <b-container>
             <b-navbar toggleable="lg" type="dark" variant="info">
@@ -35,20 +34,21 @@
                     </b-navbar-nav>
                 </b-collapse>
             </b-navbar>
-            <b-card-body>
-                @RenderBody()
-            </b-card-body>
-            @{
-                await Html.RenderPartialAsync("~/Views/Shared/footer.cshtml");
-            }
+        </b-container>
     </div>
     <script>
-        window.app = new Vue({
+        new Vue({
             el: "#app",
             data: {
-
             }
         });
     </script>
+
+    @RenderBody()
+    @{
+        await Html.RenderPartialAsync("~/Views/Shared/footer.cshtml");
+    }
+
+    @RenderSection("footer", false)
 </body>
 </html>

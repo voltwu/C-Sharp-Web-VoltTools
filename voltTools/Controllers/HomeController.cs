@@ -10,14 +10,9 @@ namespace WebApplication1.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger, IDatabase database)
+        public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
-        }
-
-        public IActionResult Index([FromServices] BaseView _base)
-        {
-            return View(_base);
         }
         public async Task<IActionResult> Page([FromServices] PageView _page, int id)
         {
@@ -27,8 +22,7 @@ namespace WebApplication1.Controllers
 
             return View(_page);
         }
-        public IActionResult Error()
-        {
+        public IActionResult Error() {
             return View();
         }
     }
