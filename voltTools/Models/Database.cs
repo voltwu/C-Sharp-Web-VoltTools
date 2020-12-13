@@ -12,6 +12,9 @@ namespace VoltTools.Models
     {
         public Page GetPage(Expression<Func<Page, bool>> filter);
         public List<Page> GetAllPages(Expression<Func<Page, bool>> filter);
+        public Task<CalendarConfiguration> GetCalendarConfiguration();
+        public Task<calendarReminder> GetACalendarReminderAsync();
+        public Task<UpdateResult> UpdateACalendarReminderAsync(ObjectId oid, DateTime last_executetime);
         public Task<List<Page>> GetAllPagesAsync(Expression<Func<Page, bool>> filter);
         public Task<Page> GetPageAsync(Expression<Func<Page, bool>> filter);
         public Task<List<Shortlink>> GetAllLinksAsync(Expression<Func<Shortlink,bool>> filter);
@@ -20,6 +23,7 @@ namespace VoltTools.Models
         public Task<ShortLinkConfiguration> GetShortLinkConfiguration();
         public Task<UpdateResult> UpdateShortLinkConfiguration(ShortLinkConfiguration configuration);
         public Task<EmailConfiguration> GetEmailConfiguration();
+        public Task<Boolean> IsIfHasAvailableCalendarReminderTask();
     }
     public class Mongo : IDatabase
     {
@@ -29,6 +33,7 @@ namespace VoltTools.Models
         public String pageCollectionName = "pages";
         public String shortLinkCollectionName = "shortlink";
         public String configurationCollectionName = "configuration";
+        public String calendarReminderCollectionName = "calendarReminder";
         private IMongoClient mongoClient = null;
         private IMongoDatabase mongoDb = null;
         public Mongo()
@@ -96,6 +101,37 @@ namespace VoltTools.Models
                 filter.Id.Equals(new MongoDB.Bson.ObjectId("5fd4ec7d10b859e2f06c3402"))
             );
             return await res.FirstOrDefaultAsync();
+        }
+        public async Task<CalendarConfiguration> GetCalendarConfiguration()
+        {
+            var res = await mongoDb.GetCollection<CalendarConfiguration>(configurationCollectionName).FindAsync(filter =>
+                filter.Id.Equals(new MongoDB.Bson.ObjectId("5fd57844547a6eec59b6e040"))
+            );
+            return await res.FirstOrDefaultAsync();
+        }
+
+        public async Task<bool> IsIfHasAvailableCalendarReminderTask()
+        {
+            return await mongoDb.GetCollection<calendarReminder>(calendarReminderCollectionName).Find(filter =>
+                filter.is_valid && filter.last_executetime.AddHours(24) <= DateTime.UtcNow).AnyAsync() ;
+        }
+
+        public async Task<calendarReminder> GetACalendarReminderAsync()
+        {
+           return await mongoDb.GetCollection<calendarReminder>(calendarReminderCollectionName).Find(filter =>
+               filter.is_valid && filter.last_executetime.AddHours(24) <= DateTime.UtcNow).FirstOrDefaultAsync();
+        }
+
+        public async Task<UpdateResult> UpdateACalendarReminderAsync(ObjectId oid, DateTime last_executetime)
+        {
+            UpdateDefinition<calendarReminder> update = Builders<calendarReminder>.Update
+                .Set(x => x.last_executetime , last_executetime);
+
+            return await mongoDb.GetCollection<calendarReminder>(calendarReminderCollectionName)
+                .UpdateOneAsync(filter => filter.Id.Equals(oid)
+                    && filter.last_executetime.AddHours(24) <= DateTime.UtcNow
+                    && filter.is_valid
+                    , update);
         }
     }
 }
