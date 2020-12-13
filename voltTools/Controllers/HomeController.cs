@@ -14,9 +14,9 @@ namespace WebApplication1.Controllers
         {
             _logger = logger;
         }
-        public async Task<IActionResult> Page([FromServices] PageView _page, int id)
+        public async Task<IActionResult> Page([FromServices] PageView _page, string urltext)
         {
-            _page.pageId = id;
+            _page.urltext = urltext;
 
             await _page.LoadData();
 

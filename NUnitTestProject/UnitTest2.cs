@@ -17,14 +17,13 @@ namespace NUnitTestProject
         [Test]
         public void Test2()
         {
-            List<Int32> res = new List<int>();
-            res.Add(0);
-            res.Add(0);
-            res.Add(0);
+            List<String> res = new List<String>();
+            res.Add("cdcd2013@outlook.com");
+            res.Add("cdcd2013@outloo2k.com");
             String ress = JsonConvert.SerializeObject(res);
             Console.WriteLine(ress);
-            List<Int32> col = JsonConvert.DeserializeObject<List<Int32>>(ress);
-            col.ForEach(a => Console.WriteLine(a));
+            //List<Int32> col = JsonConvert.DeserializeObject<List<Int32>>(ress);
+            //col.ForEach(a => Console.WriteLine(a));
             //var client = new MongoClient("mongodb+srv://volttoolsadmin:voltadmin<secret98.a@volttools.uonol.mongodb.net/volttools?retryWrites=true&w=majority");
             //var database = client.GetDatabase("volttools");
             ////var collections = database.GetCollection<BsonDocument>("pages");

@@ -1,17 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
-using VoltTools.Models;
-using VoltTools.Models.Views;
 
-namespace WebApplication1.Controllers
+namespace VoltTools.Controllers
 {
     public class BaseController : Controller
     {

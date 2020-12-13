@@ -1,9 +1,0 @@
-D:\test\C-Sharp-Web-VoltTools\CD.Routing\bin\Debug\netcoreapp3.1\CD.Common.deps.json
-D:\test\C-Sharp-Web-VoltTools\CD.Routing\bin\Debug\netcoreapp3.1\CD.Common.dll
-D:\test\C-Sharp-Web-VoltTools\CD.Routing\bin\Debug\netcoreapp3.1\CD.Common.pdb
-D:\test\C-Sharp-Web-VoltTools\CD.Routing\obj\Debug\netcoreapp3.1\CD.Common.csprojAssemblyReference.cache
-D:\test\C-Sharp-Web-VoltTools\CD.Routing\obj\Debug\netcoreapp3.1\CD.Common.AssemblyInfoInputs.cache
-D:\test\C-Sharp-Web-VoltTools\CD.Routing\obj\Debug\netcoreapp3.1\CD.Common.AssemblyInfo.cs
-D:\test\C-Sharp-Web-VoltTools\CD.Routing\obj\Debug\netcoreapp3.1\CD.Common.csproj.CoreCompileInputs.cache
-D:\test\C-Sharp-Web-VoltTools\CD.Routing\obj\Debug\netcoreapp3.1\CD.Common.dll
-D:\test\C-Sharp-Web-VoltTools\CD.Routing\obj\Debug\netcoreapp3.1\CD.Common.pdb

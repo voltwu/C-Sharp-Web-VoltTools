@@ -23,6 +23,7 @@ namespace WebApplication1
         {
             services.AddSingleton<IDatabase>(new Mongo());
             services.AddSingleton<ShortUrlAccounter>();
+            services.AddSingleton<EmailSender>();
             services.AddTransient<BaseView>();
             services.AddTransient<PageView>();
             services.AddControllersWithViews().AddRazorRuntimeCompilation();

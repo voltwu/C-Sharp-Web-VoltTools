@@ -18,7 +18,8 @@ namespace VoltTools.Models
         public Task<Shortlink> GetLinkAsync(Expression<Func<Shortlink, bool>> filter);
         public Task InsertOrReplaceShortLinkAsync(Shortlink link);
         public Task<ShortLinkConfiguration> GetShortLinkConfiguration();
-        Task<UpdateResult> UpdateShortLinkConfiguration(ShortLinkConfiguration configuration);
+        public Task<UpdateResult> UpdateShortLinkConfiguration(ShortLinkConfiguration configuration);
+        public Task<EmailConfiguration> GetEmailConfiguration();
     }
     public class Mongo : IDatabase
     {
@@ -87,6 +88,14 @@ namespace VoltTools.Models
                 .UpdateOneAsync(filter=>  filter.Id.Equals(configuration.Id)
                         && filter.version == configuration.version
                     ,update);
+        }
+
+        public async Task<EmailConfiguration> GetEmailConfiguration()
+        {
+            var res = await mongoDb.GetCollection<EmailConfiguration>(configurationCollectionName).FindAsync(filter =>
+                filter.Id.Equals(new MongoDB.Bson.ObjectId("5fd4ec7d10b859e2f06c3402"))
+            );
+            return await res.FirstOrDefaultAsync();
         }
     }
 }
