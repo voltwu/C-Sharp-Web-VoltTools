@@ -1,0 +1,118 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Online JSON Formatter";
+}
+
+@section header{
+    <link href="/JSON/jsonTree.css" rel="stylesheet" />
+    <script src="/JSON/jsonTree.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+}
+
+<div id="jsonbeatutifer">
+    <b-container>
+        <b-card-body>
+            <div class="col-md-12" style="text-align:center">
+                <h2>Online JSON Formatter</h2>
+            </div>
+            <div class="row col-md-12">
+                <div class="row col-md-10">
+                    <b-form-textarea v-model="jsondata"
+                                     placeholder="Paste your json data here"
+                                     @@keyup="keyupformatejson"
+                                     cols="5"
+                                     rows="10"
+                                     ref="jsonref">
+                    </b-form-textarea>
+                </div>
+                <div class="row col-md-2">
+                    <div class="row col-md-2">
+                        &nbsp;
+                    </div>
+                    <div class="row col-md-10">
+                        <b-form-checkbox v-model="auto">Auto Parse</b-form-checkbox>
+                        <b-button @@click="formatejson" size="sm" variant="success" class="col-lg-12" style="margin-top:10px;">Formate</b-button>
+                        <b-button @@click="copystr" size="sm" variant="success" class="col-lg-12" style="margin-top:10px;">Copy</b-button>
+                        <b-button @@click="fcopy" size="sm" variant="success" class="col-lg-12" style="margin-top:10px;">Formate & Copy</b-button>
+                    </div>
+                </div>
+                <div class="col-md-12" style="padding-top: 20px;">
+                    <div ref="wrapper">
+
+                    </div>
+                </div>
+            </div>
+        </b-card-body>
+    </b-container>
+</div>
+<script>
+    new Vue({
+        el: "#jsonbeatutifer",
+        data: {
+            auto: true,
+            jsondata: "",
+            running: "<div class=\"col-md-12\" style=\"text-align: center; color: red;\"><img src=\"/image/loading.gif\"/></div>",
+            jsonisinvalid: "<div class=\"col-md-12\" style=\"text-align: center; color: red;\">invalid json string</div>",
+        },
+        methods: {
+            fcopy: function () {
+                this.formatejson();
+                this.copystr();
+            },
+            copystr: function () {
+                if (this.jsondata.length != 0) {
+                    this.$refs.jsonref.select();
+                    document.execCommand("copy");
+                    Swal.fire({
+                        toast: true,
+                        text: 'Copy Successfully',
+                        position: 'top-end',
+                        icon: 'success',
+                        timer: 3000,
+                        showConfirmButton: false
+                    })
+                } else {
+                    Swal.fire({
+                        toast: true,
+                        text: 'No json data',
+                        position: 'top-end',
+                        icon: 'error',
+                        timer: 3000,
+                        showConfirmButton: false
+                    })
+                }
+            },
+            keyupformatejson: function () {
+                if (this.auto)
+                    this.formatejson();
+            },
+            formatejson: function () {
+                this.$refs.wrapper.innerHTML = this.running;
+                var weatherLegal = this.IsJsonString(this.jsondata);
+                if (!weatherLegal) {
+                    this.$refs.wrapper.innerHTML = this.jsonisinvalid;
+                    return;
+                }
+                this.$refs.wrapper.innerHTML = "";
+                // Create json-tree
+                var tree = jsonTree.create(JSON.parse(this.jsondata), this.$refs.wrapper);
+
+                // Expand all (or selected) child nodes of root (optional)
+                tree.expand(function (node) {
+                    return node.childNodes.length < 3 || node.label === 'phoneNumbers';
+                });
+
+                //formate the json string
+                this.jsondata = JSON.stringify(JSON.parse(this.jsondata), null, 4)
+            },
+            IsJsonString: function (str) {
+                try {
+                    JSON.parse(str);
+                } catch (e) {
+                    return false;
+                }
+                return true;
+            }
+        }
+    });
+</script>

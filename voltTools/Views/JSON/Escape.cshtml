@@ -1,0 +1,107 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "JSON Escape/Unescape";
+}
+
+@section header{
+    <link href="/JSON/jsonTree.css" rel="stylesheet" />
+    <script src="/JSON/jsonTree.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+}
+<div id="app_body">
+    <b-container>
+        <b-card-body>
+            <div class="col-md-12" style="text-align:center">
+                <h2>JSON String Escape/Unescape</h2>
+            </div>
+            <div class="col-md-12">
+                <div class="row col-md-12" style="margin-bottom:10px;">
+                    <b-button @@click="escape" size="md" variant="success" style="margin-left:15px;">Escape</b-button>
+                    <b-button @@click="unescape" size="md" variant="success" style="margin-left:15px;">Unescape</b-button>
+                    <b-button @@click="formatejson" size="md" variant="success" style="margin-left:15px;">Formate</b-button>
+                </div>
+                <div class="col-md-12">
+                    <b-form-textarea v-model="jsondata"
+                                     placeholder="Paste your json data here"
+                                     cols="5"
+                                     rows="10">
+                    </b-form-textarea>
+                </div>
+                <div class="col-md-12" style="padding-top: 20px;">
+                    <div ref="wrapper">
+
+                    </div>
+                </div>
+            </div>
+        </b-card-body>
+    </b-container>
+</div>
+<script>
+                new Vue({
+                    el: "#app_body",
+                    data: {
+                        jsondata: "",
+                        running: "<div class=\"col-md-12\" style=\"text-align: center; color: red;\"><img src=\"/image/loading.gif\"/></div>",
+                        jsonisinvalid: "<div class=\"col-md-12\" style=\"text-align: center; color: red;\">invalid json string</div>",
+                    },
+                    methods: {
+                        unescape: function () {
+                            try {
+                                var data = JSON.parse(this.jsondata);
+                                this.jsondata = data;
+                            } catch (e) {
+                                Swal.fire({
+                                    toast: true,
+                                    text: 'invalid data',
+                                    position: 'top-end',
+                                    icon: 'error',
+                                    timer: 3000,
+                                    showConfirmButton: false
+                                })
+                            }
+                        },
+                        escape: function () {
+                            try {
+                                var data = JSON.stringify(this.jsondata);
+                                this.jsondata = data;
+                            } catch (e) {
+                                Swal.fire({
+                                    toast: true,
+                                    text: 'invalid data',
+                                    position: 'top-end',
+                                    icon: 'error',
+                                    timer: 3000,
+                                    showConfirmButton: false
+                                })
+                            }
+                        },
+                        formatejson: function () {
+                            this.$refs.wrapper.innerHTML = this.running;
+                            var weatherLegal = this.IsJsonString(this.jsondata);
+                            if (!weatherLegal) {
+                                this.$refs.wrapper.innerHTML = this.jsonisinvalid;
+                                return;
+                            }
+                            this.$refs.wrapper.innerHTML = "";
+                            // Create json-tree
+                            var tree = jsonTree.create(JSON.parse(this.jsondata), this.$refs.wrapper);
+
+                            // Expand all (or selected) child nodes of root (optional)
+                            tree.expand(function (node) {
+                                return node.childNodes.length < 3 || node.label === 'phoneNumbers';
+                            });
+
+                            //formate the json string
+                            this.jsondata = JSON.stringify(JSON.parse(this.jsondata), null, 4)
+                        },
+                        IsJsonString: function(str) {
+                                try {
+                                    JSON.parse(str);
+                                } catch(e) {
+                                    return false;
+                                }
+                                return true;
+                        }
+                    }
+                });
+</script>

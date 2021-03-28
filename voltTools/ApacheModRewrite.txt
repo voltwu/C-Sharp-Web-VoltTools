@@ -1,0 +1,11 @@
+# Rewrite path with additional sub directory
+# RewriteRule ^/apache-mod-rules-redirect/(.*) /redirected?id=$1 [L,R=302]
+# RewriteRule ^/index.html /Home/Page?id=0 [QSA,NC,L]
+# RewriteRule ^/penetration.html /Home/Page?id=5 [QSA,NC,L]
+
+RewriteRule ^/error.html /Home/Error [QSA,NC,L]
+RewriteRule ^/url-shortener.html /URLShortener/Index [QSA,NC,L]
+RewriteRule ^/json.html /JSON/Index [QSA,NC,L]
+RewriteRule ^/json-escape.html /JSON/Escape [QSA,NC,L]
+RewriteRule ^/sl/(.*) /URLShortener/Proxy?path=$1 [QSA,NC,L]
+RewriteRule ^/(.*).html /Home/Page?urltext=$1 [QSA,NC,L]
