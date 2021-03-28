@@ -8,6 +8,7 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
 COPY ["voltTools/VoltTools.csproj", "voltTools/"]
+COPY ["CD.Model/CD.Model.csproj", "CD.Model/"]
 COPY ["CD.Routing/CD.Common.csproj", "CD.Routing/"]
 RUN dotnet restore "voltTools/VoltTools.csproj"
 COPY . .
