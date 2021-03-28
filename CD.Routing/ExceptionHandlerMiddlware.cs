@@ -44,7 +44,7 @@ namespace CD.Common
                 ThreadPool.QueueUserWorkItem((obj)=> {
                     _database.InsertAErrorLog(errorLog);
                 });
-
+                
                 httpContext.Response.Redirect(_errorfile);
             }
         }
