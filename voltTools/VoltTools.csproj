@@ -32,4 +32,10 @@
     <ProjectReference Include="..\CD.Routing\CD.Common.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="ApacheModRewrite.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
