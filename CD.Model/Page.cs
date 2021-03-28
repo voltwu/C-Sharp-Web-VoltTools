@@ -1,4 +1,4 @@
-﻿namespace VoltTools.Models
+﻿namespace CD.Models
 {
     public class Page
     {

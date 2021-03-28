@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using CD.Models;
+using System.Threading.Tasks;
 
 namespace VoltTools.Models.Views
 {
@@ -12,7 +13,7 @@ namespace VoltTools.Models.Views
         {
         }
 
-        internal async Task LoadData()
+        public async Task LoadData()
         {
             var page = await _database.GetPageAsync(page => page.link.Equals($"/{urltext}.html"));
             contents = page.contents;

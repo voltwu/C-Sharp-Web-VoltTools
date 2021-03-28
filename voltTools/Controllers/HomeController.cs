@@ -16,6 +16,9 @@ namespace WebApplication1.Controllers
         }
         public async Task<IActionResult> Page([FromServices] PageView _page, string urltext)
         {
+            if (string.IsNullOrEmpty(urltext))
+                return Redirect("index.html");
+
             _page.urltext = urltext;
 
             await _page.LoadData();

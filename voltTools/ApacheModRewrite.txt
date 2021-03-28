@@ -5,6 +5,7 @@
 
 RewriteRule ^/error.html /Home/Error [QSA,NC,L]
 RewriteRule ^/url-shortener.html /URLShortener/Index [QSA,NC,L]
+RewriteRule ^/json.html /JSON/Index [QSA,NC,L]
+RewriteRule ^/json-escape.html /JSON/Escape [QSA,NC,L]
 RewriteRule ^/sl/(.*) /URLShortener/Proxy?path=$1 [QSA,NC,L]
 RewriteRule ^/(.*).html /Home/Page?urltext=$1 [QSA,NC,L]
-RewriteRule ^/ /Home/Page?urltext=index [QSA,NC,L]

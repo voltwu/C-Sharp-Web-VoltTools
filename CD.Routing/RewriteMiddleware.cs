@@ -1,5 +1,7 @@
 ﻿using System;
+using System.IO;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Net.Http.Headers;
@@ -94,4 +96,19 @@ namespace RewriteRules
         }
     }
     #endregion
+
+    public static class RewriteMiddlewareExtension
+    {
+        public static void UseRewriteMiddleware(this IApplicationBuilder app)
+        {
+            using (StreamReader apacheModRewriteStreamReader =
+                File.OpenText("ApacheModRewrite.txt"))
+            {
+                var options = new RewriteOptions()
+                    .AddApacheModRewrite(apacheModRewriteStreamReader);
+
+                app.UseRewriter(options);
+            }
+        }
+    }
 }

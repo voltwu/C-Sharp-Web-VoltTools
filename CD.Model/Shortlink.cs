@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
-namespace VoltTools.Models
+namespace CD.Models
 {
     public class Shortlink
     {

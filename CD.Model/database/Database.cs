@@ -6,7 +6,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace VoltTools.Models
+namespace CD.Models
 {
     public interface IDatabase
     {
@@ -24,6 +24,7 @@ namespace VoltTools.Models
         public Task<UpdateResult> UpdateShortLinkConfiguration(ShortLinkConfiguration configuration);
         public Task<EmailConfiguration> GetEmailConfiguration();
         public Task<Boolean> IsIfHasAvailableCalendarReminderTask();
+        public void InsertAErrorLog(ErrorLog errorLog);
     }
     public class Mongo : IDatabase
     {
@@ -34,6 +35,7 @@ namespace VoltTools.Models
         public String shortLinkCollectionName = "shortlink";
         public String configurationCollectionName = "configuration";
         public String calendarReminderCollectionName = "calendarReminder";
+        public String errorlogsCollectionName = "errorlogs";
         private IMongoClient mongoClient = null;
         private IMongoDatabase mongoDb = null;
         public Mongo()
@@ -113,13 +115,13 @@ namespace VoltTools.Models
         public async Task<bool> IsIfHasAvailableCalendarReminderTask()
         {
             return await mongoDb.GetCollection<calendarReminder>(calendarReminderCollectionName).Find(filter =>
-                filter.is_valid && filter.last_executetime.AddHours(24) <= DateTime.UtcNow).AnyAsync() ;
+                filter.is_valid && filter.last_executetime <= DateTime.UtcNow.AddDays(-1)).AnyAsync() ;
         }
 
         public async Task<calendarReminder> GetACalendarReminderAsync()
         {
            return await mongoDb.GetCollection<calendarReminder>(calendarReminderCollectionName).Find(filter =>
-               filter.is_valid && filter.last_executetime.AddHours(24) <= DateTime.UtcNow).FirstOrDefaultAsync();
+               filter.is_valid && filter.last_executetime <= DateTime.UtcNow.AddDays(-1)).FirstOrDefaultAsync();
         }
 
         public async Task<UpdateResult> UpdateACalendarReminderAsync(ObjectId oid, DateTime last_executetime)
@@ -129,9 +131,14 @@ namespace VoltTools.Models
 
             return await mongoDb.GetCollection<calendarReminder>(calendarReminderCollectionName)
                 .UpdateOneAsync(filter => filter.Id.Equals(oid)
-                    && filter.last_executetime.AddHours(24) <= DateTime.UtcNow
+                    && filter.last_executetime <= DateTime.UtcNow.AddDays(1)
                     && filter.is_valid
                     , update);
+        }
+
+        public void InsertAErrorLog(ErrorLog errorLog)
+        {
+            mongoDb.GetCollection<ErrorLog>(errorlogsCollectionName).InsertOne(errorLog);
         }
     }
 }

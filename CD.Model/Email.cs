@@ -6,7 +6,7 @@ using System.Linq;
 using System.Net.Mail;
 using System.Threading.Tasks;
 
-namespace VoltTools.Models
+namespace CD.Models
 {
     public class Email
     {

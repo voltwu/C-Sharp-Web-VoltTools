@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace VoltTools.Models
+namespace CD.Models
 {
     static class Extensions
     {

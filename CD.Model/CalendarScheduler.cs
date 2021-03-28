@@ -6,13 +6,13 @@ using System.Linq;
 using System.Net.Mail;
 using System.Threading;
 using System.Threading.Tasks;
-using VoltTools.Controllers;
 
-namespace VoltTools.Models
+namespace CD.Models
 {
     public class CalendarScheduler
     {
-        private System.Threading.Timer timer;
+        private Timer timer;
+        private Task task;
         private CalendarConfiguration config;
         private IDatabase _IDataBase;
         private EmailSender _emailSender;
@@ -23,7 +23,6 @@ namespace VoltTools.Models
         }
         public async void StartSchedular() {
             config = await _IDataBase.GetCalendarConfiguration();
-
             SetUpTimer();
         }
         private void SetUpTimer()
@@ -38,6 +37,7 @@ namespace VoltTools.Models
             {
                 await ExecuteTasks();
             }, null, timeToGo, new TimeSpan(1, 0, 0, 0));
+
         }
         private async Task ExecuteTasks() {
             while (await _IDataBase.IsIfHasAvailableCalendarReminderTask()) {
@@ -177,7 +177,7 @@ namespace VoltTools.Models
 
         private void sendEmail(string subject, string sender_name,String emailAddresss, string body, string foot)
         {
-            body += foot;
+            body = String.Format("Event: {0}{1}",body,foot);
             Email email = new Email() {
                 sendername = sender_name,
                 body = body,
@@ -190,20 +190,26 @@ namespace VoltTools.Models
         public String GetFooterTimeInfo(int time_zone) {
             var current = DateTime.UtcNow.AddHours(time_zone);
             var lunnar = ConvertSolarToLunnar(current);
-            return "<div>" +
-                "Today:" +
-                $"<p>solar time: {current.ToString("yyyy-mm-dd HH:mm:ss")}</p>" +
-                $"<p>lunnar time: {lunnar.ToString("yyyy-mm-dd HH:mm:ss")}</p>" +
+            System.Globalization.ChineseLunisolarCalendar cal = new System.Globalization.ChineseLunisolarCalendar();
+
+            return "<div style=\"margin-top: 50px; \">" +
+                "<div><strong>Today</strong></div>" +
+                $"<p><strong>Solar:</strong> {current.ToString("yyyy-MM-dd HH:mm:ss")}</p>" +
+                $"<p><strong>Lunnar:</strong></p>" +
+                $"<p>Time: {lunnar.ToString("yyyy-MM-dd HH:mm:ss")}</p>" +
+                $"<p>Is a leap year: {cal.IsLeapYear(lunnar.Year)}</p>" +
+                $"<p>Which month is the leap month in this year: {cal.GetLeapMonth(lunnar.Year)-1}</p>" +
                 "</div>";
         }
         public DateTime ConvertSolarToLunnar(DateTime dt) {
             System.Globalization.ChineseLunisolarCalendar cal = new System.Globalization.ChineseLunisolarCalendar();
-            return new DateTime(cal.GetYear(dt)
-                ,cal.GetMonth(dt)
-                ,cal.GetDayOfMonth(dt)
-                ,cal.GetHour(dt)
-                ,cal.GetMinute(dt)
-                ,cal.GetSecond(dt));
+            int year = cal.GetYear(dt);
+            int month = cal.GetMonth(dt);
+            int dayOfMonth = cal.GetDayOfMonth(dt);
+            int leapMonth = cal.GetLeapMonth(year);
+            if (leapMonth != 0 && leapMonth <= month)
+                month -= 1;
+            return new DateTime(year,month,dayOfMonth);
         }
         private void Sleep()
         {
@@ -215,6 +221,7 @@ namespace VoltTools.Models
         public String alert_timer { set; get; }
         public int reminder_before { set; get; }
         public int reminder_after { set; get; }
+        public String description { set; get; }
         public TimeSpan AlertTime {
             get {
                 String[] res = alert_timer.Split(":");
@@ -239,7 +246,7 @@ namespace VoltTools.Models
         public DateTime last_executetime { set; get; }
         public TriggerType Trigger_Type {
             get {
-                if (trigger_time.StartsWith("x"))
+                if (Int32.TryParse(trigger_time.Split("_")[0],out int res))
                 {
                     return TriggerType.Year;
                 }
