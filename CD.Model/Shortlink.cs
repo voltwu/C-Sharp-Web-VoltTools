@@ -22,6 +22,7 @@ namespace CD.Models
         public String IndexTracker { set; get;}
         public DateTime lastStageTime { set;get;}
         public String description { set; get; }
+        public int seekLength { set; get; }
         public List<Int32> DeserializeIndexTracker() {
             return JsonConvert.DeserializeObject<List<Int32>>(IndexTracker.Trim('\"'));
         }

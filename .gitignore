@@ -1,0 +1,12 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/voltTools/obj
+/voltTools/bin/Debug/netcoreapp3.1
+/NUnitTestProject/obj
+/CD.Routing/obj
+/CD.Routing/bin/Debug/netcoreapp3.1
+/CD.Model/obj
+/CD.Model/bin/Debug/netcoreapp3.1
+/.vs/voltTools

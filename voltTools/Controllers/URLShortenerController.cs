@@ -43,7 +43,7 @@ namespace VoltTools.Controllers
                 DateTime lastStateTime = configuration.lastStageTime;
                 var short_url = shorter.GetAShortLink(configuration.maxAgeMinutes,
                     ref lastStateTime,
-                    ref IndexTracker, configuration.defaultUrlLenth);
+                    ref IndexTracker, configuration.defaultUrlLenth,configuration.seekLength);
                 configuration.SetIndexTracker(IndexTracker);
                 configuration.lastStageTime = lastStateTime;
                 var updateResult = await _database.UpdateShortLinkConfiguration(configuration);
@@ -94,7 +94,7 @@ namespace VoltTools.Controllers
                 ,new string[]{ "M", "Z", "A", "e", "m", "J", "h", "v", "o", "b", "K", "n", "U", "i", "F", "S", "W", "I", "u", "B", "g", "x", "c", "O", "d", "H", "L", "z", "l", "y", "X", "Q", "R", "a", "t", "q", "D", "p", "P", "T", "r", "w", "V", "E", "f", "N", "k", "Y", "C", "j", "G", "s" }
             };
         }
-        public String GetAShortLink(int maxAgeMinutes,ref DateTime lastStageTime,ref List<int> IndexTracker, int defaultUrlLenth) {
+        public String GetAShortLink(int maxAgeMinutes,ref DateTime lastStageTime,ref List<int> IndexTracker, int defaultUrlLenth,int seekLength) {
 
             if (DateTime.Compare(lastStageTime.AddMinutes(maxAgeMinutes), DateTime.UtcNow) < 0)
             {
@@ -104,8 +104,25 @@ namespace VoltTools.Controllers
             }
 
             IncrePos(maxAgeMinutes, lastStageTime, IndexTracker);
-            String res = getCorrespondingRepresent(IndexTracker);
-            return res;
+            String res = getCorrespondingRepresent(IndexTracker);            
+            return addSalt(res, seekLength);
+        }
+        private String addSalt(String shorurl, int seekLength)
+        {
+            int len = shorurl.Length;
+            for (int index = len - 1; index > 0; index--) {
+                shorurl = shorurl.Insert(index, generateConnectiveRandomChars(seekLength));
+            }
+            shorurl += generateConnectiveRandomChars(seekLength);
+            return shorurl;
+        }
+        private String generateConnectiveRandomChars(int seekLength) {
+            var rdm = new Random();
+            String result = "";
+            while (seekLength-- > 0) {
+                result += arrs[0][rdm.Next(0, arrs[0].Length + 1)];
+            }
+            return result;
         }
         private void IncrePos(int maxAgeMinutes, DateTime lastStageTime, List<int> IndexTracker)
         {
